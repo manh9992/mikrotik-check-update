@@ -39,7 +39,7 @@ Kiểm tra update từ MikroTik server
 3. Chat với bot vừa tạo, gõ `/start`
 4. Truy cập `https://api.telegram.org/bot<TOKEN>/getUpdates` → lấy **Chat ID**
 
-> 💡 Nếu gửi vào group: thêm bot vào group, gõ tin nhắn bất kỳ, rồi xem getUpdates để lấy chat ID (số âm, ví dụ `-9247237949274`)
+> 💡 Nếu gửi vào group: thêm bot vào group, gõ tin nhắn bất kỳ, rồi xem getUpdates để lấy chat ID (số âm cho group chat, ví dụ `-92472379494593`)
 
 ### Bước 2: Sửa Bot Token & Chat ID trong file script
 
