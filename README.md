@@ -43,17 +43,18 @@ Kiểm tra update từ MikroTik server
 
 ### Bước 2: Cấu hình Token & Chat ID
 
-Mở file `mikrotik-check-update.rsc`, tìm **SCRIPT 3** (gần cuối file) và sửa **1 chỗ duy nhất**:
+Mở file `mikrotik-check-update.rsc` và sửa **3 chỗ** (dòng 28, 29 và dòng scheduler):
 
 ```routeros
-/system script add name="set-telegram-config" ... source={
-    :global telegramBotToken "YOUR_BOT_TOKEN_HERE"    ← Thay token thật
-    :global telegramChatId "YOUR_CHAT_ID_HERE"        ← Thay chat ID thật
-    ...
-}
+# Dòng 28-29: Cấu hình chính
+:global telegramBotToken "YOUR_BOT_TOKEN_HERE"    ← Thay token thật
+:global telegramChatId "YOUR_CHAT_ID_HERE"        ← Thay chat ID thật
 ```
 
-> 💡 Chỉ cần sửa 1 chỗ này! Token tự động được khôi phục sau mỗi lần reboot router nhờ startup scheduler.
+```routeros
+# Trong scheduler (gần cuối file): cũng sửa token và chat ID
+on-event=":global telegramBotToken \"TOKEN_THAT\"\r\n:global telegramChatId \"CHATID_THAT\"..."
+```
 
 ### Bước 3: Import lên router
 
@@ -74,8 +75,6 @@ Mở file `mikrotik-check-update.rsc`, tìm **SCRIPT 3** (gần cuối file) và
 |-----|------|--------|
 | `check-routeros-update` | Script | Script chính — kiểm tra, sao lưu, gửi Telegram |
 | `test-check-update` | Script | Script test — giả lập có bản mới v7.99.0 |
-| `set-telegram-config` | Script | Lưu token & chat ID vào global variables |
-| `startup-telegram-config` | Scheduler | Khôi phục token sau mỗi lần reboot |
 | `schedule-check-update` | Scheduler | Tự động chạy script chính lúc 05:00 mỗi ngày |
 
 ## 📖 Quản lý
