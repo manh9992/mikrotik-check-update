@@ -282,15 +282,20 @@
 # ============================================================
 # SCHEDULER: TỰ ĐỘNG CHẠY LÚC 5H SÁNG MỖI NGÀY
 # ============================================================
+# Scheduler tự set lại global variables trước khi chạy script
+# (vì global variables bị mất sau reboot)
+# Token được lấy tự động từ dòng 27-28, không cần sửa ở đây
 
 /system scheduler remove [find name="schedule-check-update"]
+
+:local schedEvent (":global telegramBotToken \"" . $telegramBotToken . "\"\r\n:global telegramChatId \"" . $telegramChatId . "\"\r\n/system script run check-routeros-update")
 
 /system scheduler add \
     name="schedule-check-update" \
     start-date=[/system clock get date] \
     start-time=05:00:00 \
     interval=1d \
-    on-event=":global telegramBotToken \"YOUR_BOT_TOKEN_HERE\"\r\n:global telegramChatId \"YOUR_CHAT_ID_HERE\"\r\n/system script run check-routeros-update" \
+    on-event=$schedEvent \
     policy=read,write,policy,test \
     comment="Auto check RouterOS update - daily 5AM"
 

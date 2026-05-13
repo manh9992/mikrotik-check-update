@@ -43,18 +43,14 @@ Kiểm tra update từ MikroTik server
 
 ### Bước 2: Cấu hình Token & Chat ID
 
-Mở file `mikrotik-check-update.rsc` và sửa **3 chỗ** (dòng 28, 29 và dòng scheduler):
+Mở file `mikrotik-check-update.rsc` và sửa **1 chỗ duy nhất** (dòng 27-28):
 
 ```routeros
-# Dòng 28-29: Cấu hình chính
 :global telegramBotToken "YOUR_BOT_TOKEN_HERE"    ← Thay token thật
 :global telegramChatId "YOUR_CHAT_ID_HERE"        ← Thay chat ID thật
 ```
 
-```routeros
-# Trong scheduler (gần cuối file): cũng sửa token và chat ID
-on-event=":global telegramBotToken \"TOKEN_THAT\"\r\n:global telegramChatId \"CHATID_THAT\"..."
-```
+> 💡 Chỉ cần sửa 2 dòng này! Scheduler tự động lấy token từ đây khi import.
 
 ### Bước 3: Import lên router
 
