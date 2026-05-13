@@ -21,11 +21,9 @@
 
 
 # ============================================================
-# CẤU HÌNH - SỬA TOKEN VÀ CHAT ID Ở ĐÂY TRƯỚC KHI IMPORT
+# CẤU HÌNH - SỬA TOKEN VÀ CHAT ID TRONG SCRIPT set-telegram-config
+# (Ở gần cuối file, tìm "SCRIPT 3")
 # ============================================================
-
-:global telegramBotToken "YOUR_BOT_TOKEN_HERE"
-:global telegramChatId "YOUR_CHAT_ID_HERE"
 
 
 # ============================================================
@@ -280,7 +278,37 @@
 
 
 # ============================================================
-# SCHEDULER: TỰ ĐỘNG CHẠY LÚC 5H SÁNG MỖI NGÀY
+# SCRIPT 3: SET CẤU HÌNH TELEGRAM (chạy khi startup/reboot)
+# ============================================================
+
+/system script remove [find name="set-telegram-config"]
+
+/system script add name="set-telegram-config" policy=read,write,policy,test source={
+    :global telegramBotToken "YOUR_BOT_TOKEN_HERE"
+    :global telegramChatId "YOUR_CHAT_ID_HERE"
+    :log info "set-telegram-config: Da set Telegram global variables."
+}
+
+# Set luôn lần đầu
+/system script run set-telegram-config
+
+
+# ============================================================
+# SCHEDULER 1: KHỞI ĐỘNG - Set lại global variables sau reboot
+# ============================================================
+
+/system scheduler remove [find name="startup-telegram-config"]
+
+/system scheduler add \
+    name="startup-telegram-config" \
+    on-event="/system script run set-telegram-config" \
+    start-time=startup \
+    policy=read,write,policy,test \
+    comment="Set Telegram token sau moi lan reboot"
+
+
+# ============================================================
+# SCHEDULER 2: TỰ ĐỘNG KIỂM TRA LÚC 5H SÁNG MỖI NGÀY
 # ============================================================
 
 /system scheduler remove [find name="schedule-check-update"]
@@ -290,7 +318,7 @@
     start-date=[/system clock get date] \
     start-time=05:00:00 \
     interval=1d \
-    on-event=":global telegramBotToken \"YOUR_BOT_TOKEN_HERE\"\r\n:global telegramChatId \"YOUR_CHAT_ID_HERE\"\r\n/system script run check-routeros-update" \
+    on-event="/system script run check-routeros-update" \
     policy=read,write,policy,test \
     comment="Auto check RouterOS update - daily 5AM"
 
@@ -304,9 +332,11 @@
 :put " CAI DAT THANH CONG!"
 :put "============================================"
 :put ""
-:put " Script chinh : check-routeros-update"
-:put " Script test  : test-check-update"
-:put " Scheduler    : schedule-check-update (05:00)"
+:put " Script chinh  : check-routeros-update"
+:put " Script test   : test-check-update"
+:put " Script config : set-telegram-config"
+:put " Scheduler     : startup-telegram-config (startup)"
+:put "                 schedule-check-update (05:00)"
 :put ""
 :put " Test ngay:"
 :put "   /system script run test-check-update"
