@@ -43,14 +43,14 @@
     :local currentVersion [/system resource get version]
     :local currentChannel [/system package update get channel]
 
-    :log info ("$scriptName: B\E1\BA\AFt \C4\91\E1\BA\A7u ki\E1\BB\83m tra c\E1\BA\ADp nh\E1\BA\ADt RouterOS...")
-    :log info ("$scriptName: Phi\C3\AAn b\E1\BA\A3n hi\E1\BB\87n t\E1\BA\A1i: " . $currentVersion)
+    :log info ("$scriptName: Bat dau kiem tra cap nhat RouterOS...")
+    :log info ("$scriptName: Phien ban hien tai: " . $currentVersion)
 
     # Kiểm tra update từ server MikroTik
     :do {
         /system package update check-for-updates
     } on-error={
-        :log error "$scriptName: Kh\C3\B4ng th\E1\BB\83 k\E1\BA\BFt n\E1\BB\91i \C4\91\E1\BA\BFn server MikroTik!"
+        :log error "$scriptName: Khong the ket noi den server MikroTik!"
         :error "Connection failed"
     }
 
@@ -79,7 +79,7 @@
     # So sánh: có bản mới VÀ chưa thông báo version này
     :if ($latestVersion != $installedVersion && $latestVersion != $lastNotified) do={
 
-        :log warning ("$scriptName: C\C3\93 PHI\C3\8AN B\E1\BA\A2N M\E1\BB\9AI! " . $installedVersion . " -> " . $latestVersion)
+        :log warning ("$scriptName: CO PHIEN BAN MOI! " . $installedVersion . " -> " . $latestVersion)
 
         # Tự động sao lưu
         :local dateStr [/system clock get date]
@@ -90,8 +90,8 @@
             /system backup save name=$backupName dont-encrypt=yes
             :log info ("$scriptName: Binary backup OK: " . $backupName . ".backup")
         } on-error={
-            :log error "$scriptName: L\E1\BB\96I backup!"
-            :set backupStatus "L\E1\BB\96I binary backup"
+            :log error "$scriptName: LOI backup!"
+            :set backupStatus "LOI binary backup"
         }
 
         :delay 3s
@@ -100,8 +100,8 @@
             /export file=$backupName
             :log info ("$scriptName: Export OK: " . $backupName . ".rsc")
         } on-error={
-            :log error "$scriptName: L\E1\BB\96I export!"
-            :set backupStatus ($backupStatus . " + L\E1\BB\96I export")
+            :log error "$scriptName: LOI export!"
+            :set backupStatus ($backupStatus . " + LOI export")
         }
 
         :delay 2s
@@ -138,23 +138,23 @@
 
         :do {
             /tool fetch url=$apiUrl http-method=post http-data=$postData output=none
-            :log info "$scriptName: \C4\90\C3\A3 g\E1\BB\ADi Telegram th\C3\A0nh c\C3\B4ng!"
+            :log info "$scriptName: Da gui Telegram thanh cong!"
             /system script set [find name=$scriptName] comment=$latestVersion
         } on-error={
-            :log error "$scriptName: L\E1\BB\96I g\E1\BB\ADi Telegram!"
+            :log error "$scriptName: LOI gui Telegram!"
         }
 
     } else={
 
         :if ($latestVersion = $installedVersion) do={
-            :log info ("$scriptName: Kh\C3\B4ng c\C3\B3 b\E1\BA\A3n c\E1\BA\ADp nh\E1\BA\ADt m\E1\BB\9Bi. (" . $installedVersion . ")")
+            :log info ("$scriptName: Khong co ban cap nhat moi. (" . $installedVersion . ")")
         } else={
-            :log info ("$scriptName: Version " . $latestVersion . " \C4\91\C3\A3 th\C3\B4ng b\C3\A1o r\E1\BB\93i. B\E1\BB\8F qua.")
+            :log info ("$scriptName: Version " . $latestVersion . " da thong bao roi. Bo qua.")
         }
 
     }
 
-    :log info "$scriptName: Ho\C3\A0n t\E1\BA\A5t ki\E1\BB\83m tra."
+    :log info "$scriptName: Hoan tat kiem tra."
 }
 
 
@@ -185,18 +185,18 @@
     :local lastNotified [/system script get [find name=$scriptName] comment]
 
     :put "============================================"
-    :put "TEST: Ki\E1\BB\83m tra ch\E1\BB\91ng tr\C3\B9ng th\C3\B4ng b\C3\A1o"
+    :put "TEST: Kiem tra chong trung thong bao"
     :put "============================================"
-    :put ("Phi\C3\AAn b\E1\BA\A3n hi\E1\BB\87n t\E1\BA\A1i : " . $installedVersion)
-    :put ("Phi\C3\AAn b\E1\BA\A3n m\E1\BB\9Bi (fake): " . $fakeNewVersion)
-    :put ("\C4\90\C3\A3 th\C3\B4ng b\C3\A1o       : " . $lastNotified)
-    :put ("Bot token length  : " . [:len $telegramBotToken])
-    :put ("Chat ID           : " . $telegramChatId)
+    :put ("Phien ban hien tai : " . $installedVersion)
+    :put ("Phien ban moi (fake): " . $fakeNewVersion)
+    :put ("Da thong bao        : " . $lastNotified)
+    :put ("Bot token length    : " . [:len $telegramBotToken])
+    :put ("Chat ID             : " . $telegramChatId)
     :put ""
 
     :if ($fakeNewVersion != $installedVersion && $fakeNewVersion != $lastNotified) do={
 
-        :put ">> C\C3\93 b\E1\BA\A3n m\E1\BB\9Bi ch\C6\B0a th\C3\B4ng b\C3\A1o! Ti\E1\BA\BFn h\C3\A0nh sao l\C6\B0u + g\E1\BB\ADi Telegram..."
+        :put ">> CO ban moi chua thong bao! Tien hanh sao luu + gui Telegram..."
 
         :local dateStr [/system clock get date]
         :local backupName ("test-backup-v" . $installedVersion . "-" . $dateStr)
@@ -206,8 +206,8 @@
             /system backup save name=$backupName dont-encrypt=yes
             :put ("Binary backup OK: " . $backupName . ".backup")
         } on-error={
-            :set backupStatus "L\E1\BB\96I binary backup"
-            :put "L\E1\BB\96I binary backup!"
+            :set backupStatus "LOI binary backup"
+            :put "LOI binary backup!"
         }
 
         :delay 3s
@@ -216,8 +216,8 @@
             /export file=$backupName
             :put ("Export OK: " . $backupName . ".rsc")
         } on-error={
-            :set backupStatus ($backupStatus . " + L\E1\BB\96I export")
-            :put "L\E1\BB\96I export!"
+            :set backupStatus ($backupStatus . " + LOI export")
+            :put "LOI export!"
         }
 
         :delay 2s
@@ -255,22 +255,22 @@
         :do {
             /tool fetch url=$apiUrl http-method=post http-data=$postData output=none
             :put ""
-            :put "OK! \C4\90\C3\A3 g\E1\BB\ADi Telegram th\C3\A0nh c\C3\B4ng."
+            :put "OK! Da gui Telegram thanh cong."
             /system script set [find name=$scriptName] comment=$fakeNewVersion
-            :put ("\C4\90\C3\A3 l\C6\B0u notified version: " . $fakeNewVersion)
+            :put ("Da luu notified version: " . $fakeNewVersion)
         } on-error={
-            :put "L\E1\BB\96I! Kh\C3\B4ng g\E1\BB\ADi \C4\91\C6\B0\E1\BB\A3c. Ki\E1\BB\83m tra bot token v\C3\A0 chat id."
+            :put "LOI! Khong gui duoc. Kiem tra bot token va chat id."
         }
 
         :put ""
-        :put "Ki\E1\BB\83m tra Files tr\C3\AAn router \C4\91\E1\BB\83 th\E1\BA\A5y file backup."
-        :put "X\C3\B3a file test: /file remove [find name~\"test-backup\"]"
+        :put "Kiem tra Files tren router de thay file backup."
+        :put "Xoa file test: /file remove [find name~\"test-backup\"]"
 
     } else={
 
-        :put ("\C4\90\C3\A3 th\C3\B4ng b\C3\A1o version " . $fakeNewVersion . " tr\C6\B0\E1\BB\9Bc \C4\91\C3\B3 r\E1\BB\93i. B\E1\BB\8F qua.")
+        :put ("Da thong bao version " . $fakeNewVersion . " truoc do roi. Bo qua.")
         :put ""
-        :put "Test l\E1\BA\A1i t\E1\BB\AB \C4\91\E1\BA\A7u:"
+        :put "Test lai tu dau:"
         :put "  /system script set test-check-update comment=\"\""
 
     }
@@ -301,17 +301,17 @@
 
 :put ""
 :put "============================================"
-:put " \E2\9C\85 C\C3\80I \C4\90\E1\BA\B6T TH\C3\80NH C\C3\94NG!"
+:put " CAI DAT THANH CONG!"
 :put "============================================"
 :put ""
-:put " Script ch\C3\ADnh : check-routeros-update"
+:put " Script chinh : check-routeros-update"
 :put " Script test  : test-check-update"
 :put " Scheduler    : schedule-check-update (05:00)"
 :put ""
 :put " Test ngay:"
 :put "   /system script run test-check-update"
 :put ""
-:put " Ch\E1\BA\A1y th\E1\BA\ADt:"
+:put " Chay that:"
 :put "   /system script run check-routeros-update"
 :put ""
 :put "============================================"
