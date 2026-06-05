@@ -34,7 +34,7 @@
 
 /system script remove [find name="check-routeros-update"]
 
-/system script add name="check-routeros-update" policy=ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon comment="" source={
+/system script add name="check-routeros-update" policy=read,write,policy,test,sensitive,ftp comment="" source={
 
     :global telegramBotToken
     :global telegramChatId
@@ -164,7 +164,7 @@
 
 /system script remove [find name="test-check-update"]
 
-/system script add name="test-check-update" policy=ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon comment="" source={
+/system script add name="test-check-update" policy=read,write,policy,test,sensitive,ftp comment="" source={
 
     :global telegramBotToken
     :global telegramChatId
@@ -296,7 +296,7 @@
     start-time=05:00:00 \
     interval=1d \
     on-event=$schedEvent \
-    policy=ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon \
+    policy=read,write,policy,test,sensitive,ftp \
     comment="Auto check RouterOS update - daily 5AM"
 
 
